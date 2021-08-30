@@ -20,15 +20,11 @@ server.post('/api/users', (req, res) => {
     const newUser = req.body // info about the new user is in the requests body 
     data.insert(newUser)
     .then((user) => {
-        if(user){
-            res.status(201).json(user)
-        } else {
-            res.status(404).json({ message: `provide name and bio`})
-        }  
+        res.status(201).json(user)
     })
     .catch((err) => {
         console.log(err)
-        res.status(500).json({ message: err.message })
+        res.status(400).json({ message: "Please provide name and bio for the user" })
     })
 })
 
@@ -38,12 +34,12 @@ server.get('/api/users/:id', (req, res) => {
         if(user){
             res.status(200).json(user)
         } else {
-            res.status(404).json({ message: `${req.params.id} does not exist` })
+            res.status(404).json({ message: `does not exist` })
         }
     })
     .catch((err) => {
         console.log(err)
-        res.status(500).json({ message: `${req.params.id} does not exist`})
+        res.status(500).json({ message: err.message })
     })
 })
 
@@ -68,15 +64,15 @@ server.put('/api/users/:id', (req, res) => {
     data.update(id, changes)
     .then((user) => {
         if(user){
-            res.status(201).json(user)
+            res.status(400).json(user)
         } else {
-            res.status(404).json({ message: 'does not exist'})
+            res.status(404).json({ message: "The user with the specified ID does not exist"})
         }
         
     })
     .catch((err) => {
         console.log(err)
-        res.status(400).json({ message: err.message })
+        res.status(500).json({ message: "The user information could not be modified" })
     })
 })
 
