@@ -19,12 +19,16 @@ server.get('/api/users', (req, res) => {
 server.post('/api/users', (req, res) => {
     const newUser = req.body // info about the new user is in the requests body 
     data.insert(newUser)
-    .then((users) => {
-        res.status(201).json(users)
+    .then((user) => {
+        if(user){
+            res.status(201).json(user)
+        } else {
+            res.status(404).json({ message: `provide name and bio`})
+        }  
     })
     .catch((err) => {
         console.log(err)
-        res.status(500).json({ message: 'provide name and bio' })
+        res.status(500).json({ message: err.message })
     })
 })
 
@@ -55,6 +59,24 @@ server.delete('/api/users/:id', (req, res) => {
     .catch((err) => {
         console.log(err)
         res.status(500).json({ message: 'user could not be deleted' })
+    })
+})
+
+server.put('/api/users/:id', (req, res) => {
+    const { id } = req.params
+    const changes = req.body
+    data.update(id, changes)
+    .then((user) => {
+        if(user){
+            res.status(201).json(user)
+        } else {
+            res.status(404).json({ message: 'does not exist'})
+        }
+        
+    })
+    .catch((err) => {
+        console.log(err)
+        res.status(400).json({ message: err.message })
     })
 })
 
